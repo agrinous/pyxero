@@ -180,8 +180,7 @@ class FilesManager:
         uri = "/".join([self.base_url, self.name, id])
         return uri, {}, "delete", None, None, False, None
 
-    def _upload_file(self, path=None, file=None, filename=None, folderId=None):
-
+    def _upload_file(self, path, folderId=None):
         if folderId is not None:
             uri = "/".join([self.base_url, self.name, folderId])
         else:
