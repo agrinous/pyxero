@@ -2,8 +2,8 @@ import os
 from urllib.parse import parse_qs
 
 import requests
-from xero.auth import OAuth2Credentials
 
+from xero.auth import OAuth2Credentials
 from .constants import XERO_FILES_URL
 from .exceptions import (
     XeroBadRequest,
@@ -186,13 +186,10 @@ class FilesManager:
             uri = "/".join([self.base_url, self.name, folderId])
         else:
             uri = "/".join([self.base_url, self.name])
+        filename = self.filename(path)
 
         files = dict()
-        if path:
-            filename = self.filename(path)
-            files[filename] = open(path, mode="rb")
-        elif file and filename:
-            files[filename] = file
+        files[filename] = open(path, mode="rb")
 
         return uri, {}, "post", None, None, False, files
 
