@@ -19,6 +19,13 @@ class FilesManagerTest(unittest.TestCase):
             "expires_at": time(),
         }
 
+        self.filepath = "test_file.txt"
+        with open(self.filepath, "w") as f:
+            f.write("test")
+
+    def tearDown(self):
+        os.remove(self.filepath)
+
     @patch("requests.get")
     def test_tenant_is_used_in_xero_request(self, r_get):
         credentials = OAuth2Credentials(
@@ -42,14 +49,11 @@ class FilesManagerTest(unittest.TestCase):
         xero = Xero(credentials)
         r_get.return_value = None
         try:
-            filepath = "test_upload_file_with_path.txt"
-            with open(filepath, "w") as f:
-                f.write("test")
-            xero.filesAPI.files.upload_file(path=filepath)
+            xero.filesAPI.files.upload_file(path=self.filepath)
         except:  # NOQA: E722
             pass
 
-        self.assertIn(filepath, r_get.call_args[1]["files"])
+        self.assertIn(self.filepath, r_get.call_args[1]["files"])
 
     @patch("requests.post")
     def test_upload_file_as_file(self, r_get):
@@ -59,13 +63,11 @@ class FilesManagerTest(unittest.TestCase):
         xero = Xero(credentials)
         r_get.return_value = None
         try:
-            filepath = "test_upload_file_with_file.txt"
-            with open(filepath, "w") as f:
-                f.write("test")
+            with open(self.filepath, "r") as f:
                 xero.filesAPI.files.upload_file(
-                    file=f, filename=os.path.basename(filepath)
+                    file=f, filename=os.path.basename(self.filepath)
                 )
         except:  # NOQA: E722
             pass
 
-        self.assertIn(filepath, r_get.call_args[1]["files"])
+        self.assertIn(self.filepath, r_get.call_args[1]["files"])
