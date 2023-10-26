@@ -1,3 +1,4 @@
+import os.path
 import unittest
 from time import time
 from unittest.mock import patch
@@ -32,3 +33,39 @@ class FilesManagerTest(unittest.TestCase):
             pass
 
         self.assertEqual(r_get.call_args[1]["headers"]["Xero-tenant-id"], "12345")
+
+    @patch("requests.post")
+    def test_upload_file_as_path(self, r_get):
+        credentials = OAuth2Credentials(
+            "client_id", "client_secret", token=self.expired_token, tenant_id="12345"
+        )
+        xero = Xero(credentials)
+        r_get.return_value = None
+        try:
+            filepath = "test_upload_file_as_path.txt"
+            with open(filepath, "w") as f:
+                f.write("test")
+            xero.filesAPI.files.upload_file(path=filepath)
+        except:  # NOQA: E722
+            pass
+
+        self.assertIn(filepath, r_get.call_args[1]["files"])
+
+    @patch("requests.post")
+    def test_upload_file_as_file(self, r_get):
+        credentials = OAuth2Credentials(
+            "client_id", "client_secret", token=self.expired_token, tenant_id="12345"
+        )
+        xero = Xero(credentials)
+        r_get.return_value = None
+        try:
+            filepath = "test_upload_file_as_path.txt"
+            with open(filepath, "w") as f:
+                f.write("test")
+                xero.filesAPI.files.upload_file(
+                    file=f, filename=os.path.basename(filepath)
+                )
+        except:  # NOQA: E722
+            pass
+
+        self.assertIn(filepath, r_get.call_args[1]["files"])
