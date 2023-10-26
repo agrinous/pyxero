@@ -1,3 +1,4 @@
+import os
 from urllib.parse import parse_qs
 
 import requests
@@ -179,14 +180,19 @@ class FilesManager:
         uri = "/".join([self.base_url, self.name, id])
         return uri, {}, "delete", None, None, False, None
 
-    def _upload_file(self, filename, file, folderId=None):
+    def _upload_file(self, path=None, folderId=None, filename=None, file=None):
         if folderId is not None:
             uri = "/".join([self.base_url, self.name, folderId])
         else:
             uri = "/".join([self.base_url, self.name])
 
         files = dict()
-        files[filename] = file
+        if path:
+            filename = os.path.basename(path)
+            files[filename] = open(path, mode="rb")
+
+        elif filename and file:
+            files[filename] = file
 
         return uri, {}, "post", None, None, False, files
 

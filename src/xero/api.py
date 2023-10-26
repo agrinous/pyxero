@@ -47,7 +47,6 @@ class Xero:
         # instance of a Manager object to operate on it
         for name in self.OBJECT_LIST:
             manager_class = Manager
-
             if name == "Payments":
                 manager_class = PaymentManager
 
