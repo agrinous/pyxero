@@ -42,7 +42,7 @@ class FilesManagerTest(unittest.TestCase):
         xero = Xero(credentials)
         r_get.return_value = None
         try:
-            filepath = "test_upload_file_as_path.txt"
+            filepath = "test_upload_file_with_path.txt"
             with open(filepath, "w") as f:
                 f.write("test")
             xero.filesAPI.files.upload_file(path=filepath)
@@ -59,7 +59,7 @@ class FilesManagerTest(unittest.TestCase):
         xero = Xero(credentials)
         r_get.return_value = None
         try:
-            filepath = "test_upload_file_as_path.txt"
+            filepath = "test_upload_file_with_file.txt"
             with open(filepath, "w") as f:
                 f.write("test")
                 xero.filesAPI.files.upload_file(
